@@ -1,117 +1,236 @@
-const express = require('express');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const express = require("express");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
 const app = express();
 app.use(express.json());
 
-const storage = multer.diskStorage({
-    destination: './fotos_usuarios',
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
+app.use("/fotos_usuarios", express.static("fotos_usuarios"));
+
+// ROTA RAIZ
+app.get("/", (req, res) => {
+  res.send("Servidor online");
 });
 
-const upload = multer({ 
-    storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }
+const storage = multer.diskStorage({
+  destination: "./fotos_usuarios",
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
 });
 
 let usuarios = [];
 
+// Validação
 const validarUsuario = (dados) => {
-    const erros = [];
-    const { nome, email, senha, cep } = dados;
-    const sqlKeywords = ["SELECT", "CREATE", "DELETE", "UPDATE"];
+  const erros = [];
+  const { nome, email, senha, cep } = dados;
+  const sqlKeywords = ["SELECT", "CREATE", "DELETE", "UPDATE"];
 
-    for (let campo in dados) {
-        if (typeof dados[campo] === 'string') {
-            const contemSQL = sqlKeywords.some(keyword =>
-                dados[campo].toUpperCase().includes(keyword)
-            );
-            if (contemSQL) {
-                erros.push(`Tentativa de injeção SQL no campo "${campo}"`);
-            }
-        }
+  for (let campo in dados) {
+    if (typeof dados[campo] === "string") {
+      const contemSQL = sqlKeywords.some((keyword) =>
+        dados[campo].toUpperCase().includes(keyword)
+      );
+      if (contemSQL) {
+        erros.push(`Tentativa de injeção SQL no campo "${campo}"`);
+      }
     }
+  }
 
-    if (!nome || nome.length < 3) {
-        erros.push("Nome inválido (mínimo 3 caracteres).");
-    }
+  if (!nome || nome.length < 3) erros.push("Nome inválido.");
+  if (!email || !email.includes("@")) erros.push("Email inválido.");
+  if (!senha || senha.length < 6) erros.push("Senha fraca.");
+  if (!cep || !cep.match(/^\d{5}-\d{3}$/)) erros.push("CEP inválido.");
 
-    if (!email || !email.includes('@')) {
-        erros.push("Email inválido.");
-    }
-
-    if (!senha || senha.length < 6) {
-        erros.push("Senha fraca (mínimo 6 caracteres).");
-    }
-
-    if (!cep || !cep.match(/^\d{5}-\d{3}$/)) {
-        erros.push("CEP em formato inválido (00000-000).");
-    }
-
-    return erros;
+  return erros;
 };
 
-app.post('/cadastrar_usuario', upload.single('foto'), (req, res) => {
-    try {
-        const erros = validarUsuario(req.body);
-        
-        if (erros.length > 0) {
-            return res.status(500).json({ erros });
+// Cadastro
+app.post("/cadastrar_usuario", upload.single("foto"), (req, res) => {
+  try {
+    const erros = validarUsuario(req.body);
+    if (erros.length > 0) {
+      return res.status(400).json({ erros });
+    }
+
+    const novoUsuario = {
+      id: Date.now(),
+      nome: req.body.nome,
+      email: req.body.email,
+      cidade: req.body.cidade,
+      cep: req.body.cep,
+      foto: req.file ? req.file.path : null,
+    };
+
+    usuarios.push(novoUsuario);
+    res.status(200).json({ mensagem: "Usuário cadastrado com sucesso" });
+  } catch {
+    res.status(500).json({ erro: "Erro interno do servidor" });
+  }
+});
+
+// Listagem
+app.get("/listar_usuarios", (req, res) => {
+  let html = `
+    <!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <title>Usuários Cadastrados</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Segoe UI', Tahoma, sans-serif;
+            }
+
+            body {
+                min-height: 100vh;
+                background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+                padding: 40px;
+                color: #fff;
+            }
+
+            h2 {
+                text-align: center;
+                margin-bottom: 40px;
+                font-size: 2.2rem;
+                letter-spacing: 1px;
+            }
+
+            .container {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                gap: 25px;
+                max-width: 1200px;
+                margin: auto;
+            }
+
+            .card {
+                background: rgba(255, 255, 255, 0.08);
+                border-radius: 15px;
+                padding: 25px;
+                text-align: center;
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+
+            .card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            }
+
+            .avatar {
+                width: 90px;
+                height: 90px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid #00d4ff;
+                margin-bottom: 15px;
+            }
+
+            .nome {
+                font-size: 1.2rem;
+                font-weight: 600;
+                margin-bottom: 8px;
+            }
+
+            .email {
+                font-size: 0.9rem;
+                opacity: 0.85;
+                margin-bottom: 10px;
+                word-break: break-word;
+            }
+
+            .cidade {
+                display: inline-block;
+                margin-top: 10px;
+                padding: 5px 12px;
+                border-radius: 20px;
+                background: rgba(0, 212, 255, 0.15);
+                font-size: 0.8rem;
+                letter-spacing: 0.5px;
+            }
+
+            .sem-usuarios {
+                text-align: center;
+                opacity: 0.7;
+                font-size: 1.1rem;
+            }
+
+            .voltar {
+                position: fixed;
+                top: 25px;
+                left: 25px;
+                padding: 10px 18px;
+                border-radius: 30px;
+                color: #fff;
+                background: rgba(255, 255, 255, 0.15);
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                backdrop-filter: blur(8px);
+                cursor: pointer;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+}
+
+            .voltar:hover {
+                box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+                background: rgba(0, 212, 255, 0.35);
+}
+
+        </style>
+    </head>
+    <body>
+
+    <button class="voltar" onclick="history.back()">← Voltar</button>
+
+
+        <h2>Usuários Cadastrados</h2>
+
+        ${
+          usuarios.length === 0
+            ? `<p class="sem-usuarios">Nenhum usuário cadastrado ainda.</p>`
+            : `
+            <div class="container">
+                ${usuarios
+                  .map(
+                    (u) => `
+                    <div class="card">
+                        ${
+                          u.foto
+                            ? `<img class="avatar" src="/${u.foto}">`
+                            : `<img class="avatar" src="https://via.placeholder.com/90">`
+                        }
+                        <div class="nome">${u.nome}</div>
+                        <div class="email">${u.email}</div>
+                        <div class="cidade">${
+                          u.cidade || "Cidade não informada"
+                        }</div>
+                    </div>
+                `
+                  )
+                  .join("")}
+            </div>
+            `
         }
 
-        const novoUsuario = {
-            ...req.body,
-            id: Date.now(),
-            foto: req.file ? req.file.path : null
-        };
-
-        usuarios.push(novoUsuario);
-        res.status(200).send("OK");
-
-    } catch (error) {
-        res.status(500).json({
-            erros: ["Erro interno no servidor."]
-        });
-    }
-});
-
-app.get('/listar_usuarios', (req, res) => {
-    let html = `
-        <html>
-        <head>
-            <title>Lista de Usuários</title>
-            <style>
-                table { width: 100%; border-collapse: collapse; font-family: sans-serif; }
-                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
-            </style>
-        </head>
-        <body>
-            <h1>Usuários Cadastrados</h1>
-            <table>
-                <tr>
-                    <th>Foto</th><th>Nome</th><th>Email</th><th>Cidade</th>
-                </tr>
-                ${usuarios.map(u => `
-                    <tr>
-                        <td><img src="/${u.foto}" alt="foto"></td>
-                        <td>${u.nome}</td>
-                        <td>${u.email}</td>
-                        <td>${u.cidade}</td>
-                    </tr>
-                `).join('')}
-            </table>
-        </body>
-        </html>
+    </body>
+    </html>
     `;
-    res.send(html);
+  res.send(html);
 });
 
-app.use('/fotos_usuarios', express.static('fotos_usuarios'));
-
+// 🔹 Servidor
 const PORT = 5000;
-app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Servidor rodando em http://localhost:${PORT}`);
+});

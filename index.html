@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<form class="form"
+      method="POST"
+      action="http://localhost:5000/cadastrar_usuario"
+      enctype="multipart/form-data">
+
+  <div class="form-title">
+    <span>Me segue no insta</span>
+  </div>
+
+  <div class="title-2">
+    <span>gabs_alex11</span>
+  </div>
+
+  <!-- NOME -->
+  <div class="input-container">
+    <input type="text" name="nome" placeholder="Nome completo" required>
+  </div>
+
+  <!-- EMAIL -->
+  <div class="input-container">
+    <input class="input-mail" type="email" name="email" placeholder="Email" required>
+    <span></span>
+  </div>
+
+  <!-- SENHA -->
+  <div class="input-container">
+    <input class="input-pwd" type="password" name="senha" placeholder="Senha" required>
+  </div>
+
+  <!-- CEP -->
+  <div class="input-container">
+    <input type="text" name="cep" placeholder="CEP (00000-000)" required>
+  </div>
+
+  <!-- CIDADE -->
+  <div class="input-container">
+    <input type="text" name="cidade" placeholder="Cidade" required>
+  </div>
+
+  <!-- FOTO -->
+  <div class="input-container">
+    <input type="file" name="foto" accept="image/*">
+  </div>
+
+  <!-- ESTRELINHAS -->
+  <section class="bg-stars">
+    <span class="star"></span>
+    <span class="star"></span>
+    <span class="star"></span>
+    <span class="star"></span>
+  </section>
+
+  <button type="submit" class="submit">
+    <span class="sign-text">Cadastrar</span>
+  </button>
+
+  <p class="signup-link">
+    Ver usuários cadastrados?
+    <a href="http://localhost:5000/listar_usuarios" class="up">Abrir lista</a>
+  </p>
+
+</form>
+
+</body>
+</html>
