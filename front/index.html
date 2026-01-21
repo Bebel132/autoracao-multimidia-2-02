@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <title>Login</title>
   <link rel="stylesheet" href="style/style.css">
   <link rel="stylesheet" href="style/auth.css">
 </head>
+
 <body>
   <div class="container-auth">
     <div class="title">LOGIN</div>
@@ -26,15 +28,29 @@
       <span>SUA PRIMEIRA VEZ? <a href="signin.html">CADASTRE-SE</a></span>
     </div>
   </div>
-  <script>
+  <script type="module">
+    import api from "./scripts/apiHelper.js";
     const login = document.querySelector("#login");
 
-    login.addEventListener("submit", e => {
+    login.addEventListener("submit", async e => {
       e.preventDefault();
 
-      // login concluido
-      window.location = "home.html"
+      const email = document.querySelector("#email").value;
+      const senha = document.querySelector("#senha").value;
+
+      const res = await api.post("/login", { email, senha })
+
+      if(res.error){
+        alert(res.error)
+        return
+      } else {
+        // login concluido
+        alert("Login realizado com sucesso!")
+        window.location = "home.html"
+      }
+
     })
   </script>
 </body>
+
 </html>

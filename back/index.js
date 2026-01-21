@@ -2,9 +2,18 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const cors = require("cors");
 
 const app = express();
+
+app.use(cors({
+  origin: ["http://127.0.0.1:5500", "http://localhost:5500"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
 app.use(express.json());
+app.use(cors());
 
 app.use("/fotos_usuarios", express.static("fotos_usuarios"));
 
@@ -25,7 +34,17 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-let usuarios = [];
+let usuarios = [
+  {
+    id: 1,
+    nome: "Emanuel",
+    email: "emanuelmassalegal@mail.com",
+    senha: "senha123",
+    cep: "12345-678",
+    cidade: "São Paulo",
+    foto: null
+  }
+];
 
 // Validação
 const validarUsuario = (dados) => {
@@ -64,15 +83,30 @@ app.post("/cadastrar_usuario", upload.single("foto"), (req, res) => {
       id: Date.now(),
       nome: req.body.nome,
       email: req.body.email,
+      senha: req.body.senha,
       cidade: req.body.cidade,
       cep: req.body.cep,
       foto: req.file ? req.file.path : null,
     };
 
     usuarios.push(novoUsuario);
-    res.status(200).json({ mensagem: "Usuário cadastrado com sucesso" });
+    res.status(200).json({ mensagem: "Usuário cadastrado com sucesso", usuarios: usuarios });
   } catch {
     res.status(500).json({ erro: "Erro interno do servidor" });
+  }
+});
+
+app.post("/login", (req, res) => {
+  const { email, senha } = req.body;
+
+  const usuario = usuarios.find(
+    (u) => u.email === email
+  );
+
+  if (usuario && usuario.senha === senha) {
+    res.status(200).json({ mensagem: "Login realizado com sucesso", usuario });
+  } else {
+    res.status(401).json({ erro: "Credenciais inválidas" });
   }
 });
 

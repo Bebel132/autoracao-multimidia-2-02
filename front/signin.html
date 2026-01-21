@@ -32,7 +32,7 @@
         <form action="" id="signin2">
             <div class="input-container">
                 <label for="cep">CEP</label>
-                <input type="number" name="cep" id="cep">
+                <input type="text" name="cep" id="cep">
             </div>
             <div class="input-container">
                 <label for="endereco">ENDEREÇO</label>
@@ -70,37 +70,6 @@
             <span>JÁ POSSUI CONTA? <a href="index.html">REALIZE O LOGIN</a></span>
         </div>
     </div>
-    <script>
-        const signin1 = document.querySelector("#signin1");
-        const signin2 = document.querySelector("#signin2");
-        const signin3 = document.querySelector("#signin3");
-
-        // mostra primeira etapa
-        signin1.style.display = "flex";
-
-        signin1.addEventListener("submit", e => {
-            e.preventDefault();
-
-            // mostra segunda etapa
-            signin1.style.display = "none";
-            signin2.style.display = "flex";
-        })
-
-        signin2.addEventListener("submit", e => {
-            e.preventDefault();
-
-            // mostra terceira etapa
-            signin2.style.display = "none";
-            signin3.style.display = "flex";
-        })
-
-
-        signin3.addEventListener("submit", e => {
-            e.preventDefault();
-
-            // cadastro concluido
-            window.location = "home.html"
-        })
-    </script>
+    <script type="module" src="scripts/signin.js"></script>
 </body>
 </html>
