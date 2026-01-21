@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <title>Login</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style/style.css">
+  <link rel="stylesheet" href="style/auth.css">
 </head>
+
 <body>
   <div class="container-auth">
     <div class="title">LOGIN</div>
@@ -25,5 +28,15 @@
       <span>SUA PRIMEIRA VEZ? <a href="signin.html">CADASTRE-SE</a></span>
     </div>
   </div>
+  <script>
+    const login = document.querySelector("#login");
+
+    login.addEventListener("submit", e => {
+      e.preventDefault();
+
+      // login concluido
+      window.location = "home.html"
+    })
+  </script>
 </body>
 </html>
