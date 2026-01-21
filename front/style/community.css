@@ -1,0 +1,43 @@
+.communityList {
+    background-color: var(--color-half-white);
+    width: 800px;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    scrollbar-width: auto;
+    scrollbar-color: var(--color-dark-blue) var(--color-half-white);
+}
+
+.communityList::-webkit-scrollbar {
+    width: 20px
+}
+
+.communityItem {
+    background-color: var(--color-violet);
+    color: var(--color-white);
+    display: grid;
+    grid-template-columns: 1fr 5fr 1fr;
+    align-items: center;
+    border: 3px solid var(--color-white);
+    height: 200px;
+    padding: 20px;
+}
+
+.profilePic {
+    width: 120px;
+    height: 100px;
+    padding-right: 10px;
+    border-right: 3px solid var(--color-white);
+}
+
+.add {
+    width: 60px;
+    height: 60px;
+}
+
+.itemTexts {
+    margin: 0 40px 0 20px;
+}

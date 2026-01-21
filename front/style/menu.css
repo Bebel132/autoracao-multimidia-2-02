@@ -11,6 +11,19 @@
 .menu img {
     height: 79px;
     cursor: pointer;
+    transition: .2s;
+}
+
+#logo {
+    padding-left: 10px;
+}
+
+img.active {
+    background-color: var(--color-dark-blue);
+}
+
+.menu img:hover {
+    background-color: var(--color-dark-blue);
 }
 
 .menu-itens {
@@ -20,34 +33,39 @@
     width: 800px;
 }
 
-.menu-item {
+.menu-itens a {
+    color: var(--color-white);
     display: flex;
     justify-content: center;
     align-items: center;
     transition: .2s;
     cursor: pointer;
+    text-decoration: none;
+    height: 79px;
 }
 
-.menu-item:hover {
+.menu-itens a:hover {
     background-color: var(--color-white);
     color: var(--color-violet);
 }
 
-.menu-item:last-child {
-    background-color: var(--color-violet);
-}
-
-.menu img:hover {
-    background-color: var(--color-dark-blue);
-}
-
-.active {
+.menu-itens a.active {
     background-color: var(--color-white);
     color: var(--color-violet);
 }
+
 
 /* content */
 
 .content {
-    height: calc(100vh - 85px);
+    height: calc(100vh - 105px);
+    margin-top: 20px;
+    padding-bottom: 30px;
+    display: flex;
+    gap: 40px;
+}
+
+.exampleProfile {
+    background-color: var(--color-half-white);
+    width: 300px;
 }

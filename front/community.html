@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/menu.css">
+    <link rel="stylesheet" href="style/community.css">
+</head>
+<body>
+    <div class="menu">
+        <a href="home.html"><img src="assets/logo.svg" alt="" id="logo"></a>
+        <ul class="menu-itens">
+            <a href="community.html" class="active">
+                <li class="menu-item">COMUNIDADE</li>
+            </a>
+            <a href="friendsRequest.html">
+                <li class="menu-item">PEDIDOS</li>
+            </a>
+            <a href="aboutUs.html">
+                <li class="menu-item">SOBRE NÓS</li>
+            </a>
+            <li class="menu-item" id="logout"><img src="assets/doorIcon.png" alt=""></li>
+        </ul>
+    </div>
+    <div class="content">
+        <div class="communityList">
+            <div class="communityItem">
+                <img src="assets/account-circle.png" alt="" class="profilePic">
+                <div class="itemTexts">
+                    <h1>Lorem Ipsum</h1>
+                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus nisi tenetur dolores, magni nobis molestiae, dignissimos a vero repellat aspernatur, illo mollitia facere corporis. Tenetur sed iure rerum voluptatum aliquam.</p>
+                </div>
+                <img src="assets/person-add.png" alt="" class="add">
+            </div>
+        </div>
+        <div class="exampleProfile"></div>
+    </div>
+    <script>
+        const list = [
+            {
+                title: "Lorem Ipsum",
+                desc: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus nisi tenetur dolores, magni nobis molestiae, dignissimos a vero repellat aspernatur, illo mollitia facere corporis. Tenetur sed iure rerum voluptatum aliquam."
+            },
+            {
+                title: "Lorem Ipsum",
+                desc: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus nisi tenetur dolores, magni nobis molestiae, dignissimos a vero repellat aspernatur, illo mollitia facere corporis. Tenetur sed iure rerum voluptatum aliquam."
+            },
+            {
+                title: "Lorem Ipsum",
+                desc: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus nisi tenetur dolores, magni nobis molestiae, dignissimos a vero repellat aspernatur, illo mollitia facere corporis. Tenetur sed iure rerum voluptatum aliquam."
+            },
+            {
+                title: "Lorem Ipsum",
+                desc: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus nisi tenetur dolores, magni nobis molestiae, dignissimos a vero repellat aspernatur, illo mollitia facere corporis. Tenetur sed iure rerum voluptatum aliquam."
+            },
+            {
+                title: "Lorem Ipsum",
+                desc: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus nisi tenetur dolores, magni nobis molestiae, dignissimos a vero repellat aspernatur, illo mollitia facere corporis. Tenetur sed iure rerum voluptatum aliquam."
+            },
+            {
+                title: "Lorem Ipsum",
+                desc: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus nisi tenetur dolores, magni nobis molestiae, dignissimos a vero repellat aspernatur, illo mollitia facere corporis. Tenetur sed iure rerum voluptatum aliquam."
+            },
+            {
+                title: "Lorem Ipsum",
+                desc: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus nisi tenetur dolores, magni nobis molestiae, dignissimos a vero repellat aspernatur, illo mollitia facere corporis. Tenetur sed iure rerum voluptatum aliquam."
+            },
+        ]
+        const listContainer = document.querySelector(".communityList");
+
+        list.forEach(item => {
+            const h1 = document.createElement("h1");
+            h1.textContent = item.title;
+
+            const p = document.createElement("p");
+            p.textContent = item.desc;
+
+            const img1 = document.createElement("img");
+            img1.classList.add("profilePic");
+            
+            const img2 = document.createElement("img");
+            img2.classList.add("add")
+
+            img1.src = "assets/account-circle.png";
+            img2.src = "assets/person-add.png";
+            
+            const communityItem = document.createElement("div");
+            communityItem.classList.add("communityItem");
+
+            const itemTexts = document.createElement("div");
+            itemTexts.classList.add("itemTexts");
+
+            communityItem.appendChild(img1);
+
+            itemTexts.appendChild(h1);
+            itemTexts.appendChild(p);
+
+            communityItem.appendChild(itemTexts);
+            communityItem.appendChild(img2);
+
+            listContainer.appendChild(communityItem)
+        })
+    </script>
+</body>
+</html>
