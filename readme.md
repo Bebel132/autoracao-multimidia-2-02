@@ -1,7 +1,27 @@
+## Estrutura das pastas
+
+```
+/
+├── back/
+│ ├── index.js
+│ ├── fotos_usuarios/
+│ └── package.json
+│
+├── front/
+│ ├── index.html
+| ├── [outros arquivos html]
+│ ├── style/
+│ ├── assets/
+│ └── scripts/
+│
+├── index.html
+└── readme.md
+```
+
 ## Como rodar
 
 ### 1. Instalação
-Clone este repositório ou baixe os arquivos. No terminal, dentro da pasta do projeto, instale as dependências:
+Clone este repositório ou baixe os arquivos. No terminal, dentro da pasta do back, instale as dependências:
 
 ```bash
 npm install
@@ -15,35 +35,7 @@ node server.js
 ```
 O servidor iniciará em: http://localhost:5000
 
+### 3. Iniciar o front
+Vá para pasta raiz e abra o arquivo `index.html`, ele redirecionará para a página inicial do projeto, ou entre na pasta `front` e abra o arquivo `index.html`
 
-## Documentação da API
-**POST /cadastrar_usuario**
-
-Envia os dados do formulário para o servidor.
-
-
-- Body (form-data):
-    - `nome:` String (mín. 3 caracteres)
-    - `email:` String (deve conter @)
-    - `senha:` String (mín. 6 caracteres)
-    - `cep:` String (formato 00000-000)
-    - `cidade:` String
-    - `foto:` Arquivo de imagem (Máx 5MB)
-
-Respostas:
-
-- `200 OK:` Cadastro realizado com sucesso.
-
-- `500 Internal Server Error:` Retorna um JSON com a lista de erros encontrados.
-
-**GET /listar_usuarios**
-
-Exibe uma página HTML com a tabela paginada (simulada) de todos os usuários cadastrados.
-
-## Regras de Segurança Implementadas
-
-O sistema possui um filtro de sanitização que percorre todos os campos enviados. Se houver a presença de:
-
-- `SELECT`, `CREATE`, `DELETE` ou `UPDATE`
-
-A requisição é imediatamente rejeitada com status 500, protegendo a integridade da aplicação (Simulação de SQL Injection).
+Esse `index.html` na pasta raiz serve para facilitar o uso do live server
