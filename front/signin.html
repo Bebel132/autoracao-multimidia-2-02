@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    #signin1, #signin2, #signin3 {
+        display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-auth">
+    <div class="title">CADASTRO</div>
+
+    <form action="" id="signin1">
+        <div class="input-container">
+            <label for="nome">NOME</label>
+            <input type="text" name="text" id="text">
+        </div>
+        <div class="input-container">
+          <label for="email">E-MAIL</label>
+          <input type="email" name="email" id="email">
+        </div>
+      <input type="submit" value="PROSSEGUIR">
+    </form>
+
+    <form action="" id="signin2">
+        <div class="input-container">
+            <label for="cep">CEP</label>
+            <input type="number" name="cep" id="cep">
+        </div>
+        <div class="input-container">
+          <label for="endereco">ENDEREÇO</label>
+          <input type="text" name="endereco" id="endereco">
+        </div>
+        <div class="input-container">
+          <label for="cidade">CIDADE</label>
+          <input type="text" name="cidade" id="cidade">
+        </div>
+        <div class="input-container">
+          <label for="estado">ESTADO</label>
+          <input type="text" name="estado" id="estado">
+        </div>
+      <input type="submit" value="PROSSEGUIR">
+    </form>
+
+    <form action="" id="signin3">
+        <div class="input-container">
+            <label for="senha">SENHA</label>
+            <input type="password" name="senha" id="senha">
+        </div>
+        <span>
+            *Mínimo de 10 Caracteres;<br>
+            *Obrigatorio conter letras, números e caracteres especiais;<br>
+            *Apenas *,;, são permitidos como especiais.<br>
+        </span>
+        <div class="input-container">
+            <label for="confirmarSenha">CONFIRMAR SENHA</label>
+            <input type="password" name="confirmarSenha" id="confirmarSenha">
+        </div>
+      <input type="submit" value="CADASTRAR-SE">
+    </form>
+
+    <div class="firstAcess">
+      <span>JÁ POSSUI CONTA? <a href="index.html">REALIZE O LOGIN</a></span>
+    </div>
+  </div>
+  <script>
+    const signin1 = document.querySelector("#signin1");
+    const signin2 = document.querySelector("#signin2");
+    const signin3 = document.querySelector("#signin3");
+
+    // mostra primeira etapa
+    signin1.style.display = "flex";
+
+    signin1.addEventListener("submit", e => {
+        e.preventDefault();
+        
+        // mostra segunda etapa
+        signin1.style.display = "none";
+        signin2.style.display = "flex";
+    })
+    
+    signin2.addEventListener("submit", e => {
+        e.preventDefault();
+        
+        // mostra terceira etapa
+        signin2.style.display = "none";
+        signin3.style.display = "flex";
+    })
+
+    
+    signin3.addEventListener("submit", e => {
+        e.preventDefault();
+        
+        // cadastro concluido
+        window.location = "home.html"
+    })
+  </script>
+</body>
+</html>
