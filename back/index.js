@@ -54,7 +54,41 @@ let usuarios = [
     cidade: "São Paulo",
     foto: "fotos_usuarios\\1769087335581-images (1).jpg"
   },
+  {
+    id: 3,
+    nome: "usuario teste",
+    email: "mail@mail.com",
+    senha: "123",
+    cep: "12345-678",
+    cidade: "São Paulo",
+    foto: ""
+  },
+  {
+    id: 4,
+    nome: "usuaraio teste2",
+    email: "mail@mail.com",
+    senha: "123",
+    cep: "12345-678",
+    cidade: "São Paulo",
+    foto: ""
+  },
 ];
+
+let pedidosAmizade = [
+  {
+    id: 1,
+    de: 2,
+    para: 3
+  }
+];
+
+let amizades = [
+  {
+    id: 1,
+    usuario1: 1,
+    usuario2: 3
+  }
+]
 
 const sessoes = {};
 
@@ -320,11 +354,17 @@ app.get("/me", autenticar, (req, res) => {
   });
 });
 
-// Listar todos os usuários
+// Listar todos os usuários (que você pode adicionar como amigo)
 app.get("/usuarios", autenticar, (req, res) => {
   res.json(usuarios
     .filter(u => u.email !== req.usuario.email)
+    .filter(u => {
+      const usuarioLogado = usuarios.find(user => user.email === req.usuario.email);
+      const amizadeExistente = amizades.find(a => a.usuario1 === usuarioLogado.id && a.usuario2 === u.id);
+      return !amizadeExistente;
+    })
     .map(u => ({ 
+      id: u.id,
       nome: u.nome, 
       email: u.email, 
       cidade: u.cidade, 
@@ -348,6 +388,43 @@ app.post("/me/upload_foto", autenticar, upload.single("foto"), (req, res) => {
   } catch {
     res.status(500).json({ erro: "Erro interno do servidor" });
   }
+});
+
+app.post("/amizade/pedir/:paraId", autenticar, (req, res) => {
+  const deId = usuarios.find(u => u.email === req.usuario.email).id;
+  const paraId = parseInt(req.params.paraId);
+
+  if (deId === paraId) {
+    return res.status(400).json({ erro: "Você não pode pedir amizade com você mesmo." });
+  }
+
+  const pedidoExistente = pedidosAmizade.find(p => p.de === deId && p.para === paraId);
+  if (pedidoExistente) {
+    return res.status(400).json({ erro: "Pedido de amizade já enviado." });
+  }
+
+  const novoPedido = {
+    id: pedidosAmizade.length + 1,
+    de: deId,
+    para: paraId
+  };
+
+  pedidosAmizade.push(novoPedido);
+  res.status(201).json({ mensagem: "Pedido de amizade enviado com sucesso." });
+});
+
+app.get("/amigos", autenticar, (req, res) => {
+  const usuarioId = usuarios.find(u => u.email === req.usuario.email).id;
+  const amigosIds = amizades
+    .filter(a => a.usuario1 === usuarioId || a.usuario2 === usuarioId)
+    .map(a => (a.usuario1 === usuarioId ? a.usuario2 : a.usuario1));
+  const amigos = usuarios.filter(u => amigosIds.includes(u.id)).map(u => ({
+    id: u.id,
+    nome: u.nome,
+    email: u.email,
+    foto: u.foto
+  }));
+  res.json(amigos);
 });
 
 // 🔹 Servidor
