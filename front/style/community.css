@@ -29,8 +29,8 @@
 .profilePic {
     width: 120px;
     height: 100px;
+    border-radius: 100%;
     padding-right: 10px;
-    border-right: 3px solid var(--color-white);
 }
 
 .add {
@@ -39,5 +39,12 @@
 }
 
 .itemTexts {
-    margin: 0 40px 0 20px;
+    margin-right: 40px;
+    padding-left: 20px;
+    height: 100%;
+    display: flex;
+    align-items: start;
+    flex-direction: column;
+    justify-content: center;
+    border-left: 3px solid var(--color-white);
 }

@@ -35,72 +35,108 @@
                 <img src="assets/person-add.png" alt="" class="add">
             </div>
         </div>
-        <div class="exampleProfile"></div>
+        <div class="userProfile">
+            <div class="profileContainer">
+                <div class="userProfilePic">
+                    <img src="" alt="" class="userPic">
+                    <span class="changePhoto">ALTERAR FOTO</span>
+                    <input type="file" id="fotoInput" accept="image/*" hidden>
+                </div>
+                <span id="profileMsg">Olá, tudo bem?</span>
+                <h1 id="userName">Nome do Usuário</h1>
+                <hr>
+                <h2>Seus amigos</h2>
+                <ul class="friendsList">
+                </ul>
+            </div>
+        </div>
     </div>
-    <script>
-        const list = [
-            {
-                title: "Lorem Ipsum",
-                desc: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus nisi tenetur dolores, magni nobis molestiae, dignissimos a vero repellat aspernatur, illo mollitia facere corporis. Tenetur sed iure rerum voluptatum aliquam."
-            },
-            {
-                title: "Lorem Ipsum",
-                desc: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus nisi tenetur dolores, magni nobis molestiae, dignissimos a vero repellat aspernatur, illo mollitia facere corporis. Tenetur sed iure rerum voluptatum aliquam."
-            },
-            {
-                title: "Lorem Ipsum",
-                desc: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus nisi tenetur dolores, magni nobis molestiae, dignissimos a vero repellat aspernatur, illo mollitia facere corporis. Tenetur sed iure rerum voluptatum aliquam."
-            },
-            {
-                title: "Lorem Ipsum",
-                desc: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus nisi tenetur dolores, magni nobis molestiae, dignissimos a vero repellat aspernatur, illo mollitia facere corporis. Tenetur sed iure rerum voluptatum aliquam."
-            },
-            {
-                title: "Lorem Ipsum",
-                desc: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus nisi tenetur dolores, magni nobis molestiae, dignissimos a vero repellat aspernatur, illo mollitia facere corporis. Tenetur sed iure rerum voluptatum aliquam."
-            },
-            {
-                title: "Lorem Ipsum",
-                desc: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus nisi tenetur dolores, magni nobis molestiae, dignissimos a vero repellat aspernatur, illo mollitia facere corporis. Tenetur sed iure rerum voluptatum aliquam."
-            },
-            {
-                title: "Lorem Ipsum",
-                desc: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus nisi tenetur dolores, magni nobis molestiae, dignissimos a vero repellat aspernatur, illo mollitia facere corporis. Tenetur sed iure rerum voluptatum aliquam."
-            },
-        ]
+    <script type="module">
+        import api from "./scripts/apiHelper.js";
+
+        const user = api.get("/me").then(res => {
+            document.querySelector("#userName").textContent = res.nome;
+            document.querySelector(".userPic").src = 
+                res.foto
+                    ? `http://localhost:5000/${res.foto}`
+                    : "assets/account-circle.png";
+        });
+
+        const fotoInput = document.querySelector("#fotoInput");
+
+        document.querySelector(".userProfilePic").addEventListener("click", () => {
+            fotoInput.click();
+        })
+
+        fotoInput.addEventListener("change", async e => {
+            const file = fotoInput.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append("foto", file);
+
+            try {
+                const res = await fetch("http://localhost:5000/me/upload_foto", {
+                method: "POST",
+                headers: {
+                    Authorization: localStorage.getItem("token"),
+                },
+                body: formData,
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw data;
+                }
+
+                // Atualiza a imagem na tela
+                document.querySelector(".userProfilePic img").src = data.foto;
+
+                alert("Foto atualizada com sucesso!");
+            } catch (err) {
+                console.error(err);
+                alert(err.erro || "Erro ao enviar foto");
+            }
+        });
+
         const listContainer = document.querySelector(".communityList");
+        
+        api.get("/usuarios").then(res => {
+            res.forEach(item => {
+                const h1 = document.createElement("h1");
+                h1.textContent = item.nome;
 
-        list.forEach(item => {
-            const h1 = document.createElement("h1");
-            h1.textContent = item.title;
+                const p = document.createElement("p");
+                p.textContent = item.email;
 
-            const p = document.createElement("p");
-            p.textContent = item.desc;
+                const img1 = document.createElement("img");
+                img1.classList.add("profilePic");
+                
+                const img2 = document.createElement("img");
+                img2.classList.add("add")
 
-            const img1 = document.createElement("img");
-            img1.classList.add("profilePic");
-            
-            const img2 = document.createElement("img");
-            img2.classList.add("add")
+                img1.src = item.foto
+                    ? `http://localhost:5000/${item.foto}`
+                    : "assets/account-circle.png";
+                img2.src = "assets/person-add.png";
+                
+                const communityItem = document.createElement("div");
+                communityItem.classList.add("communityItem");
 
-            img1.src = "assets/account-circle.png";
-            img2.src = "assets/person-add.png";
-            
-            const communityItem = document.createElement("div");
-            communityItem.classList.add("communityItem");
+                const itemTexts = document.createElement("div");
+                itemTexts.classList.add("itemTexts");
 
-            const itemTexts = document.createElement("div");
-            itemTexts.classList.add("itemTexts");
+                communityItem.appendChild(img1);
 
-            communityItem.appendChild(img1);
+                itemTexts.appendChild(h1);
+                itemTexts.appendChild(p);
 
-            itemTexts.appendChild(h1);
-            itemTexts.appendChild(p);
+                communityItem.appendChild(itemTexts);
+                communityItem.appendChild(img2);
 
-            communityItem.appendChild(itemTexts);
-            communityItem.appendChild(img2);
-
-            listContainer.appendChild(communityItem)
+                listContainer.appendChild(communityItem)
+            });
         })
     </script>
 </body>

@@ -3,6 +3,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const cors = require("cors");
+const crypto = require("crypto");
 
 const app = express();
 
@@ -42,9 +43,20 @@ let usuarios = [
     senha: "senha123",
     cep: "12345-678",
     cidade: "São Paulo",
-    foto: null
-  }
+    foto: "fotos_usuarios\\1769087727064-82MeWn_3TT1k_oR7RsLaLb1OLasHxosX0b4_ZZI5wNo.webp"
+  },
+  {
+    id: 2,
+    nome: "Emanuel2",
+    email: "massalegal@mail.com",
+    senha: "senha123",
+    cep: "12345-678",
+    cidade: "São Paulo",
+    foto: "fotos_usuarios\\1769087335581-images (1).jpg"
+  },
 ];
+
+const sessoes = {};
 
 // Validação
 const validarUsuario = (dados) => {
@@ -70,6 +82,18 @@ const validarUsuario = (dados) => {
 
   return erros;
 };
+
+// Autenticação Middleware
+function autenticar(req, res, next) {
+  const token = req.headers.authorization;
+
+  if (!token || !sessoes[token]) {
+    return res.status(401).json({ erro: "Usuário não autenticado" });
+  }
+
+  req.usuario = sessoes[token];
+  next();
+}
 
 // Cadastro
 app.post("/cadastrar_usuario", upload.single("foto"), (req, res) => {
@@ -103,11 +127,28 @@ app.post("/login", (req, res) => {
     (u) => u.email === email
   );
 
-  if (usuario && usuario.senha === senha) {
-    res.status(200).json({ mensagem: "Login realizado com sucesso", usuario });
-  } else {
-    res.status(401).json({ erro: "Credenciais inválidas" });
+  if (!usuario) {
+    return res.status(401).json({ error: "Credenciais inválidas" });
   }
+
+  if (usuario && usuario.senha === senha) {
+    const token = crypto.randomBytes(16).toString("hex");
+
+    sessoes[token] = {
+      id: usuario.id,
+      email: usuario.email,
+      nome: usuario.nome,
+    }
+
+    res.status(200).json({ message: "Login bem sucedido", token, usuario: sessoes[token] });
+  }
+
+});
+
+app.post("/logout", autenticar, (req, res) => {
+  const token = req.headers.authorization;
+  delete sessoes[token];
+  res.status(200).json({ mensagem: "Logout realizado com sucesso" });
 });
 
 // Listagem
@@ -261,6 +302,52 @@ app.get("/listar_usuarios", (req, res) => {
     </html>
     `;
   res.send(html);
+});
+
+// Dados do usuário autenticado
+app.get("/me", autenticar, (req, res) => {
+  const usuario = usuarios.find(u => u.email === req.usuario.email);
+  
+  if (!usuario) {
+    return res.status(404).json({ erro: "Usuário não encontrado" });
+  }
+
+  res.json({ 
+    id: usuario.id,
+    nome: usuario.nome, 
+    email: usuario.email,
+    foto: usuario.foto
+  });
+});
+
+// Listar todos os usuários
+app.get("/usuarios", autenticar, (req, res) => {
+  res.json(usuarios
+    .filter(u => u.email !== req.usuario.email)
+    .map(u => ({ 
+      nome: u.nome, 
+      email: u.email, 
+      cidade: u.cidade, 
+      foto: u.foto 
+    }))
+  );
+});
+
+app.post("/me/upload_foto", autenticar, upload.single("foto"), (req, res) => {
+  try {
+    const usuario = usuarios.find(u => u.email === req.usuario.email);
+    if (!usuario) {
+      return res.status(404).json({ erro: "Usuário não encontrado" });
+    }
+    if (req.file) {
+      usuario.foto = req.file.path;
+      return res.status(200).json({ mensagem: "Foto atualizada com sucesso", foto: usuario.foto });
+    } else {
+      return res.status(400).json({ erro: "Nenhuma foto enviada" });
+    }
+  } catch {
+    res.status(500).json({ erro: "Erro interno do servidor" });
+  }
 });
 
 // 🔹 Servidor

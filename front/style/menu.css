@@ -65,7 +65,73 @@ img.active {
     gap: 40px;
 }
 
-.exampleProfile {
+.userProfile {
     background-color: var(--color-half-white);
     width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.profileContainer {
+    background-color: var(--color-violet);
+    padding: 10px;
+    color: var(--color-white);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+#profileMsg {
+    margin: 20px 0 10px 0;
+}
+
+.profileContainer h1 {
+    text-align: center;
+}
+
+.userProfilePic {
+    position: relative;
+    width: 150px;
+    height: 150px;
+}
+
+.userProfilePic img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 3px solid var(--color-white);
+    cursor: pointer;
+}
+
+.changePhoto {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.726);
+    color: var(--color-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .2s ease;
+    cursor: pointer;
+    font-size: 26px;
+    text-align: center;
+    margin: 3px;
+}
+
+.userProfilePic:hover .changePhoto {
+    opacity: 1;
+    visibility: visible;
+}
+
+.profileContainer hr {
+    margin: 30px 0;
+    width: 100%;
 }

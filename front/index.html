@@ -41,12 +41,13 @@
       const res = await api.post("/login", { email, senha })
 
       if(res.error){
-        alert(res.error)
-        return
+        alert(res.error);
+        return;
       } else {
         // login concluido
-        alert("Login realizado com sucesso!")
-        window.location = "home.html"
+        alert("Login realizado com sucesso!");
+        localStorage.setItem("token", res.token);
+        window.location = "home.html";
       }
 
     })
