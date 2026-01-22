@@ -12,6 +12,12 @@ function validarSenhar(senha) {
         !/[^a-zA-Z0-9*;#]/.test(senha)
     );
 }
+function validarNome(nome) { 
+    if (nome.length <= 3 || nome.length > 50) {
+        return false;
+    }
+    return true;
+}
 
 function validarEmail(email) {
     return /^[a-zA-Z0-9._]+@[a-zA-Z0-9.]+\.[a-zA-Z]{2,}$/.test(email);
@@ -46,11 +52,18 @@ signin1.style.display = "flex";
 signin1.addEventListener("submit", e => {
     e.preventDefault();
 
+    if(validarNome(document.querySelector("#text").value) === false) {
+        alert("Nome inválido! O nome deve conter entre 4 e 50 letras.");
+        return;
+    } else {
+        newUser.nome = document.querySelector("#text").value;
+    }
+
+
     if(validarEmail(document.querySelector("#email").value) === false) {
         alert("Email inválido!");
         return;
     } else {
-        newUser.nome = document.querySelector("#text").value;
         newUser.email = document.querySelector("#email").value;
     }
 
