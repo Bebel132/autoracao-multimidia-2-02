@@ -17,6 +17,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/fotos_usuarios", express.static("fotos_usuarios"));
+app.use("/fotos_jogos", express.static("fotos_jogos"));
 
 // ROTA RAIZ
 app.get("/", (req, res) => {
@@ -35,6 +36,99 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
+let games = [
+  {
+    id: 1,
+    nome: "Nebula Raiders",
+    genero: "Ação / Sci-Fi",
+    plataforma: "PC",
+    desenvolvedora: "Orion Studios",
+    lancamento: 2022,
+    foto: "fotos_jogos/nebulaRaiders.png"
+  },
+  {
+    id: 2,
+    nome: "Myth of Eldoria",
+    genero: "RPG",
+    plataforma: "PC / Console",
+    desenvolvedora: "Silver Leaf Games",
+    lancamento: 2021,
+    foto: "fotos_jogos/mythOfEldoria.png"
+  },
+  {
+    id: 3,
+    nome: "Cyber Drift",
+    genero: "Corrida",
+    plataforma: "PC / Console",
+    desenvolvedora: "Neon Wheel",
+    lancamento: 2023,
+    foto: "fotos_jogos/cyberDrift.png"
+  },
+  {
+    id: 4,
+    nome: "Dungeon of Ashes",
+    genero: "Roguelike",
+    plataforma: "PC",
+    desenvolvedora: "Dark Forge",
+    lancamento: 2020,
+    foto: "fotos_jogos/dungeonOfAshes.png"
+  },
+  {
+    id: 5,
+    nome: "Skyfall Kingdoms",
+    genero: "Estratégia",
+    plataforma: "PC",
+    desenvolvedora: "Cloud Crown",
+    lancamento: 2019,
+    foto: "fotos_jogos/skyfallKingdoms.png"
+  },
+  {
+    id: 6,
+    nome: "Echoes of the Deep",
+    genero: "Aventura",
+    plataforma: "PC / Console",
+    desenvolvedora: "Blue Tide Interactive",
+    lancamento: 2022,
+    foto: "fotos_jogos/echoesOfTheDeep.png"
+  },
+  {
+    id: 7,
+    nome: "Pixel Brawl Arena",
+    genero: "Luta",
+    plataforma: "PC",
+    desenvolvedora: "Retro Punch",
+    lancamento: 2018,
+    foto: "fotos_jogos/pixelBrawlArena.png"
+  },
+  {
+    id: 8,
+    nome: "Starbound Colony",
+    genero: "Simulação",
+    plataforma: "PC",
+    desenvolvedora: "Nova Core",
+    lancamento: 2023,
+    foto: "fotos_jogos/starboundColony.png"
+  },
+  {
+    id: 9,
+    nome: "Wasteland Survivors",
+    genero: "Sobrevivência",
+    plataforma: "PC / Console",
+    desenvolvedora: "Iron Dust",
+    lancamento: 2020,
+    foto: "fotos_jogos/wastelandSurvivors.png"
+  },
+  {
+    id: 10,
+    nome: "Chrono Rift",
+    genero: "Puzzle / Aventura",
+    plataforma: "PC",
+    desenvolvedora: "Time Loop Devs",
+    lancamento: 2024,
+    foto: "fotos_jogos/chronoRift.png"
+  }
+];
+
 let usuarios = [
   {
     id: 1,
@@ -43,7 +137,7 @@ let usuarios = [
     senha: "senha123",
     cep: "12345-678",
     cidade: "São Paulo",
-    foto: "fotos_usuarios\\1769087727064-82MeWn_3TT1k_oR7RsLaLb1OLasHxosX0b4_ZZI5wNo.webp"
+    foto: "fotos_usuarios/1769087727064-82MeWn_3TT1k_oR7RsLaLb1OLasHxosX0b4_ZZI5wNo.webp"
   },
   {
     id: 2,
@@ -52,7 +146,7 @@ let usuarios = [
     senha: "senha123",
     cep: "12345-678",
     cidade: "São Paulo",
-    foto: "fotos_usuarios\\1769087335581-images (1).jpg"
+    foto: "fotos_usuarios/1769087335581-images (1).jpg"
   },
   {
     id: 3,
@@ -61,7 +155,7 @@ let usuarios = [
     senha: "123",
     cep: "12345-678",
     cidade: "São Paulo",
-    foto: "fotos_usuarios\\WhatsApp Image 2026-01-05 at 10.21.45.jpeg"
+    foto: "fotos_usuarios/WhatsApp Image 2026-01-05 at 10.21.45.jpeg"
   },
   {
     id: 4,
@@ -425,6 +519,10 @@ app.get("/amigos", autenticar, (req, res) => {
     foto: u.foto
   }));
   res.json(amigos);
+});
+
+app.get("/games", autenticar, (req, res) => {
+  res.json(games);
 });
 
 // 🔹 Servidor

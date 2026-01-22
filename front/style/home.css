@@ -1,4 +1,4 @@
-.algumacoisa {
+.gamesList {
     background-color: var(--color-half-white);
     width: 800px;
     padding: 20px;
@@ -9,4 +9,41 @@
 
     scrollbar-width: auto;
     scrollbar-color: var(--color-dark-blue) var(--color-half-white);
+}
+
+.gamesList ul {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    list-style: none;
+    height: 100%;
+}
+
+.gameItem {
+    width: 280px;
+    flex: 1 0 auto;
+    background-color: var(--color-violet);
+    border: 1px solid var(--color-white);
+    padding: 10px;
+    max-height: 500px;
+    margin-bottom: 20px;
+    color: var(--color-white);
+}
+
+.gameItem img {
+    width: 100%;
+}
+
+.gameItem h1 {
+    border-top: 3px solid var(--color-white);
+    border-bottom: 3px solid var(--color-white);
+    padding: 10px 0;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.gameItem div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
