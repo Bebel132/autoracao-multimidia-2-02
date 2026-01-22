@@ -6,6 +6,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="style/style.css">
     <link rel="stylesheet" href="style/menu.css">
+    <link rel="stylesheet" href="style/aboutUs.css">
 </head>
 <body>
     <div class="menu">
@@ -23,6 +24,24 @@
             <li class="menu-item" id="logout"><img src="assets/doorIcon.png" alt=""></li>
         </ul>
     </div>
-    <div class="content"></div>
+    <div class="content">
+        <div class="algumacoisa"></div>
+        <div class="userProfile">
+            <div class="profileContainer">
+                <div class="userProfilePic">
+                    <img src="" alt="" class="userPic">
+                    <span class="changePhoto">ALTERAR FOTO</span>
+                    <input type="file" id="fotoInput" accept="image/*" hidden>
+                </div>
+                <span id="profileMsg">Olá, tudo bem?</span>
+                <h1 id="userName">Nome do Usuário</h1>
+                <hr>
+                <h2>Seus amigos</h2>
+                <ul class="friendsList">
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="scripts/profile.js"></script>
 </body>
 </html>

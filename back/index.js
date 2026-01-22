@@ -61,7 +61,7 @@ let usuarios = [
     senha: "123",
     cep: "12345-678",
     cidade: "São Paulo",
-    foto: ""
+    foto: "fotos_usuarios\\WhatsApp Image 2026-01-05 at 10.21.45.jpeg"
   },
   {
     id: 4,

@@ -1,5 +1,10 @@
 import api from "./apiHelper.js";
 
+document.querySelector("#logout").addEventListener("click", () => {
+    localStorage.removeItem("token");
+    window.location = "index.html";
+});
+
 api.get("/me").then(res => {
     document.querySelector("#userName").textContent = res.nome;
     document.querySelector(".userPic").src = 
@@ -45,3 +50,24 @@ fotoInput.addEventListener("change", async e => {
         alert(err.erro || "Erro ao enviar foto");
     }
 });
+
+const friendsList = document.querySelector(".friendsList");
+await api.get("/amigos").then(res => {
+    res.forEach(amigo => {
+        const li = document.createElement("li");
+
+        const img = document.createElement("img");
+        img.src = amigo.foto
+            ? `http://localhost:5000/${amigo.foto}`
+            : "assets/account-circle.png";
+        img.classList.add("friendPic");
+
+        const span = document.createElement("span");
+        span.textContent = amigo.nome;
+
+        li.appendChild(img);
+        li.appendChild(span);
+
+        friendsList.appendChild(li);
+    })
+})

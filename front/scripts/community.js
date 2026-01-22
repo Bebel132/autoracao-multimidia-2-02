@@ -1,10 +1,5 @@
 import api from "./apiHelper.js";
 
-document.querySelector("#logout").addEventListener("click", () => {
-    localStorage.removeItem("token");
-    window.location = "index.html";
-});
-
 const listContainer = document.querySelector(".communityList");
 
 await api.get("/usuarios").then(res => {
@@ -60,24 +55,3 @@ document.querySelectorAll(".add").forEach(btn => {
         }
     });
 });
-
-const friendsList = document.querySelector(".friendsList");
-await api.get("/amigos").then(res => {
-    res.forEach(amigo => {
-        const li = document.createElement("li");
-
-        const img = document.createElement("img");
-        img.src = amigo.foto
-            ? `http://localhost:5000/${amigo.foto}`
-            : "assets/account-circle.png";
-        img.classList.add("friendPic");
-
-        const span = document.createElement("span");
-        span.textContent = amigo.nome;
-
-        li.appendChild(img);
-        li.appendChild(span);
-
-        friendsList.appendChild(li);
-    })
-})

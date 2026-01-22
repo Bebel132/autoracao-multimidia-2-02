@@ -1,0 +1,12 @@
+.algumacoisa {
+    background-color: var(--color-half-white);
+    width: 800px;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    scrollbar-width: auto;
+    scrollbar-color: var(--color-dark-blue) var(--color-half-white);
+}
