@@ -42,11 +42,8 @@
   border: none;
 }
 
-.input-container > input:disabled {
-  background-color: var(--color-dark-blue);
-}
-
-.container-auth input[type="submit"] {
+.container-auth input[type="submit"],
+.container-auth input[type="reset"]{
   width: 100%;
   border: none;
   height: 45px;
