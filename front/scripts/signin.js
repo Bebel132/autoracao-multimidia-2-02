@@ -99,7 +99,7 @@ signin2.addEventListener("submit", e => {
     }
 
     if(validarEndereco(document.querySelector("#endereco").value) === false) {
-        alert("Endereço inválido! O endereço deve conter mais de 3 caracteres.");
+        alert("Endereço inválido! O endereço deve conter no mínimo 4 caracteres.");
         return;
     } else {
         newUser.endereco = document.querySelector("#endereco").value;
