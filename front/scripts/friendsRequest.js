@@ -19,6 +19,7 @@ pedidos.forEach(p => {
         <strong>${p.nome}</strong>
         <p>${p.email}</p>
       </div>
+      ACEITAR?
     </div>
     <div class="requestActions">
       <img src="assets/check.svg" class="accept">
@@ -29,6 +30,7 @@ pedidos.forEach(p => {
   item.querySelector(".accept").addEventListener("click", async () => {
     await api.post(`/amizade/aceitar/${p.pedidoId}`);
     item.remove();
+    window.location.reload();
   });
 
   item.querySelector(".reject").addEventListener("click", async () => {

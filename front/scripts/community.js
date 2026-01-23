@@ -48,6 +48,7 @@ document.querySelectorAll(".add").forEach(btn => {
     try {
       await api.post(`/amizade/pedir/${paraId}`);
       alert("Pedido de amizade enviado!");
+      window.location.reload();
     } catch (err) {
       const codigo = err?.data?.codigo;
 

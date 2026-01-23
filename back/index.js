@@ -450,21 +450,38 @@ app.get("/me", autenticar, (req, res) => {
 
 // Listar todos os usuários (que você pode adicionar como amigo)
 app.get("/usuarios", autenticar, (req, res) => {
-  res.json(usuarios
-    .filter(u => u.email !== req.usuario.email)
-    .filter(u => {
-      const usuarioLogado = usuarios.find(user => user.email === req.usuario.email);
-      const amizadeExistente = amizades.find(a => a.usuario1 === usuarioLogado.id && a.usuario2 === u.id);
-      return !amizadeExistente;
-    })
-    .map(u => ({ 
+  const usuarioLogado = usuarios.find(u => u.email === req.usuario.email);
+
+  if (!usuarioLogado) {
+    return res.status(404).json({ erro: "Usuário logado não encontrado" });
+  }
+
+  const resultado = usuarios
+    // Remove o próprio usuário
+    .filter(u => u.id !== usuarioLogado.id)
+
+    // Remove quem já é amigo
+    .filter(u => !amizades.some(a =>
+      (a.usuario1 === usuarioLogado.id && a.usuario2 === u.id) ||
+      (a.usuario1 === u.id && a.usuario2 === usuarioLogado.id)
+    ))
+
+    // Remove quem já tem pedido pendente (enviado ou recebido)
+    .filter(u => !pedidosAmizade.some(p =>
+      (p.de === usuarioLogado.id && p.para === u.id) ||
+      (p.de === u.id && p.para === usuarioLogado.id)
+    ))
+
+    // Retorna apenas dados públicos
+    .map(u => ({
       id: u.id,
-      nome: u.nome, 
-      email: u.email, 
-      cidade: u.cidade, 
-      foto: u.foto 
-    }))
-  );
+      nome: u.nome,
+      email: u.email,
+      cidade: u.cidade,
+      foto: u.foto
+    }));
+
+  res.json(resultado);
 });
 
 app.post("/me/upload_foto", autenticar, upload.single("foto"), (req, res) => {
