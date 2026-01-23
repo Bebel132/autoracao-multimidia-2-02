@@ -73,4 +73,7 @@ await api.get("/amigos").then(res => {
 })
 
 const pedidos = await api.get("/amizade/pedidos");
-document.querySelector("#pedidos").textContent = pedidos.length;
+if(pedidos.length > 0) {
+    document.querySelector("#pedidos").textContent = pedidos.length;
+    document.querySelector("#pedidos").style.display = "flex";
+}

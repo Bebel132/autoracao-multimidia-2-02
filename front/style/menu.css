@@ -62,12 +62,13 @@ img.active {
     width: 20px;
     height: 20px;
     background-color: #ff0000;
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     border-radius: 100%;
     color: var(--color-white);
     margin: 10px;
+    padding-bottom: 3px;
 }
 
 

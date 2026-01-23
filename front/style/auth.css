@@ -38,7 +38,12 @@
 .input-container > input {
   height: 45px;
   background-color: var(--color-half-white);
+  padding: 0 10px;
   border: none;
+}
+
+.input-container > input:disabled {
+  background-color: var(--color-dark-blue);
 }
 
 .container-auth input[type="submit"] {

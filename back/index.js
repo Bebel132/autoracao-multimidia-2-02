@@ -297,7 +297,7 @@ app.get("/listar_usuarios", (req, res) => {
 
             body {
                 min-height: 100vh;
-                background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+                background-color: #11162F;
                 padding: 40px;
                 color: #fff;
             }
@@ -318,12 +318,12 @@ app.get("/listar_usuarios", (req, res) => {
             }
 
             .card {
-                background: rgba(255, 255, 255, 0.08);
+                background-color: #402483;
                 border-radius: 15px;
                 padding: 25px;
                 text-align: center;
                 backdrop-filter: blur(10px);
-                border: 1px solid rgba(255, 255, 255, 0.15);
+                border: 3px solid #fff;
                 transition: transform 0.3s, box-shadow 0.3s;
             }
 
@@ -337,7 +337,7 @@ app.get("/listar_usuarios", (req, res) => {
                 height: 90px;
                 border-radius: 50%;
                 object-fit: cover;
-                border: 3px solid #00d4ff;
+                border: 3px solid #fff;
                 margin-bottom: 15px;
             }
 
@@ -359,7 +359,6 @@ app.get("/listar_usuarios", (req, res) => {
                 margin-top: 10px;
                 padding: 5px 12px;
                 border-radius: 20px;
-                background: rgba(0, 212, 255, 0.15);
                 font-size: 0.8rem;
                 letter-spacing: 0.5px;
             }
@@ -377,8 +376,8 @@ app.get("/listar_usuarios", (req, res) => {
                 padding: 10px 18px;
                 border-radius: 30px;
                 color: #fff;
-                background: rgba(255, 255, 255, 0.15);
-                border: 1px solid rgba(255, 255, 255, 0.25);
+                background: #402483;
+                border: 1px solid #fff;
                 backdrop-filter: blur(8px);
                 cursor: pointer;
                 font-size: 0.9rem;
@@ -387,7 +386,7 @@ app.get("/listar_usuarios", (req, res) => {
 
             .voltar:hover {
                 box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-                background: rgba(0, 212, 255, 0.35);
+                background: #11162f;
 }
 
         </style>
