@@ -42,6 +42,7 @@ img.active {
     cursor: pointer;
     text-decoration: none;
     height: 81px;
+    position: relative;
 }
 
 .menu-itens a:hover {
@@ -52,6 +53,22 @@ img.active {
 .menu-itens a.active {
     background-color: var(--color-white);
     color: var(--color-violet);
+}
+
+#pedidos {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    background-color: #ff0000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+    color: var(--color-white);
+    margin: 10px;
+    padding-bottom: 3px;
 }
 
 

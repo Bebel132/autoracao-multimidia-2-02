@@ -1,4 +1,4 @@
-.algumacoisa {
+.requestsContainer {
     background-color: var(--color-half-white);
     width: 800px;
     padding: 20px;
@@ -10,3 +10,74 @@
     scrollbar-width: auto;
     scrollbar-color: var(--color-dark-blue) var(--color-half-white);
 }
+
+.requestsList {
+    display: flex;
+    gap: 25px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    height: 100%;
+}
+
+.requestsList::-webkit-scrollbar {
+    height: 10px;
+}
+
+.requestsList::-webkit-scrollbar-thumb {
+    background: var(--color-dark-blue);
+    border-radius: 10px;
+}
+
+.requestItem {
+    background: var(--color-violet);
+    max-width: 280px;
+    height: 380px;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid var(--color-white);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    scroll-snap-align: center;
+    flex: 1 0 auto;
+}
+
+.requestInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    text-align: center;
+}
+
+.requestInfo img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.requestInfo div {
+    border-top: 1px solid var(--color-white);
+    border-bottom: 1px solid var(--color-white);
+    padding: 10px 0;
+    margin-bottom: -10px;
+}
+
+.requestActions {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.requestActions img {
+    width: 42px;
+    cursor: pointer;
+}
+
+.requestActions img:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s;
+}
+

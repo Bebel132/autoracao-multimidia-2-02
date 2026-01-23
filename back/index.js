@@ -297,7 +297,7 @@ app.get("/listar_usuarios", (req, res) => {
 
             body {
                 min-height: 100vh;
-                background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+                background-color: #11162F;
                 padding: 40px;
                 color: #fff;
             }
@@ -318,12 +318,12 @@ app.get("/listar_usuarios", (req, res) => {
             }
 
             .card {
-                background: rgba(255, 255, 255, 0.08);
+                background-color: #402483;
                 border-radius: 15px;
                 padding: 25px;
                 text-align: center;
                 backdrop-filter: blur(10px);
-                border: 1px solid rgba(255, 255, 255, 0.15);
+                border: 3px solid #fff;
                 transition: transform 0.3s, box-shadow 0.3s;
             }
 
@@ -337,7 +337,7 @@ app.get("/listar_usuarios", (req, res) => {
                 height: 90px;
                 border-radius: 50%;
                 object-fit: cover;
-                border: 3px solid #00d4ff;
+                border: 3px solid #fff;
                 margin-bottom: 15px;
             }
 
@@ -359,7 +359,6 @@ app.get("/listar_usuarios", (req, res) => {
                 margin-top: 10px;
                 padding: 5px 12px;
                 border-radius: 20px;
-                background: rgba(0, 212, 255, 0.15);
                 font-size: 0.8rem;
                 letter-spacing: 0.5px;
             }
@@ -377,8 +376,8 @@ app.get("/listar_usuarios", (req, res) => {
                 padding: 10px 18px;
                 border-radius: 30px;
                 color: #fff;
-                background: rgba(255, 255, 255, 0.15);
-                border: 1px solid rgba(255, 255, 255, 0.25);
+                background: #402483;
+                border: 1px solid #fff;
                 backdrop-filter: blur(8px);
                 cursor: pointer;
                 font-size: 0.9rem;
@@ -387,7 +386,7 @@ app.get("/listar_usuarios", (req, res) => {
 
             .voltar:hover {
                 box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-                background: rgba(0, 212, 255, 0.35);
+                background: #11162f;
 }
 
         </style>
@@ -450,21 +449,38 @@ app.get("/me", autenticar, (req, res) => {
 
 // Listar todos os usuários (que você pode adicionar como amigo)
 app.get("/usuarios", autenticar, (req, res) => {
-  res.json(usuarios
-    .filter(u => u.email !== req.usuario.email)
-    .filter(u => {
-      const usuarioLogado = usuarios.find(user => user.email === req.usuario.email);
-      const amizadeExistente = amizades.find(a => a.usuario1 === usuarioLogado.id && a.usuario2 === u.id);
-      return !amizadeExistente;
-    })
-    .map(u => ({ 
+  const usuarioLogado = usuarios.find(u => u.email === req.usuario.email);
+
+  if (!usuarioLogado) {
+    return res.status(404).json({ erro: "Usuário logado não encontrado" });
+  }
+
+  const resultado = usuarios
+    // Remove o próprio usuário
+    .filter(u => u.id !== usuarioLogado.id)
+
+    // Remove quem já é amigo
+    .filter(u => !amizades.some(a =>
+      (a.usuario1 === usuarioLogado.id && a.usuario2 === u.id) ||
+      (a.usuario1 === u.id && a.usuario2 === usuarioLogado.id)
+    ))
+
+    // Remove quem já tem pedido pendente (enviado ou recebido)
+    .filter(u => !pedidosAmizade.some(p =>
+      (p.de === usuarioLogado.id && p.para === u.id) ||
+      (p.de === u.id && p.para === usuarioLogado.id)
+    ))
+
+    // Retorna apenas dados públicos
+    .map(u => ({
       id: u.id,
-      nome: u.nome, 
-      email: u.email, 
-      cidade: u.cidade, 
-      foto: u.foto 
-    }))
-  );
+      nome: u.nome,
+      email: u.email,
+      cidade: u.cidade,
+      foto: u.foto
+    }));
+
+  res.json(resultado);
 });
 
 app.post("/me/upload_foto", autenticar, upload.single("foto"), (req, res) => {
@@ -485,27 +501,49 @@ app.post("/me/upload_foto", autenticar, upload.single("foto"), (req, res) => {
 });
 
 app.post("/amizade/pedir/:paraId", autenticar, (req, res) => {
-  const deId = usuarios.find(u => u.email === req.usuario.email).id;
+  const usuarioLogado = usuarios.find(u => u.email === req.usuario.email);
+  const deId = usuarioLogado.id;
   const paraId = parseInt(req.params.paraId);
 
   if (deId === paraId) {
-    return res.status(400).json({ erro: "Você não pode pedir amizade com você mesmo." });
+    return res.status(400).json({ codigo: "SELF", erro: "Você não pode se adicionar" });
   }
 
-  const pedidoExistente = pedidosAmizade.find(p => p.de === deId && p.para === paraId);
+  // Verifica se já são amigos
+  const jaAmigos = amizades.some(a =>
+    (a.usuario1 === deId && a.usuario2 === paraId) ||
+    (a.usuario1 === paraId && a.usuario2 === deId)
+  );
+
+  if (jaAmigos) {
+    return res.status(409).json({
+      codigo: "JA_SAO_AMIGOS",
+      erro: "Vocês já são amigos"
+    });
+  }
+
+  // Verifica pedido existente
+  const pedidoExistente = pedidosAmizade.some(p =>
+    (p.de === deId && p.para === paraId) ||
+    (p.de === paraId && p.para === deId)
+  );
+
   if (pedidoExistente) {
-    return res.status(400).json({ erro: "Pedido de amizade já enviado." });
+    return res.status(409).json({
+      codigo: "PEDIDO_EXISTENTE",
+      erro: "Já existe um pedido pendente"
+    });
   }
 
-  const novoPedido = {
+  pedidosAmizade.push({
     id: pedidosAmizade.length + 1,
     de: deId,
     para: paraId
-  };
+  });
 
-  pedidosAmizade.push(novoPedido);
-  res.status(201).json({ mensagem: "Pedido de amizade enviado com sucesso." });
+  res.status(201).json({ mensagem: "Pedido de amizade enviado" });
 });
+
 
 app.get("/amigos", autenticar, (req, res) => {
   const usuarioId = usuarios.find(u => u.email === req.usuario.email).id;
@@ -525,7 +563,53 @@ app.get("/games", autenticar, (req, res) => {
   res.json(games);
 });
 
-// 🔹 Servidor
+app.get("/amizade/pedidos", autenticar, (req, res) => {
+  const usuarioId = usuarios.find(u => u.email === req.usuario.email).id;
+
+  const pedidos = pedidosAmizade
+    .filter(p => p.para === usuarioId)
+    .map(p => {
+      const remetente = usuarios.find(u => u.id === p.de);
+      return {
+        pedidoId: p.id,
+        id: remetente.id,
+        nome: remetente.nome,
+        email: remetente.email,
+        foto: remetente.foto
+      };
+    });
+
+  res.json(pedidos);
+});
+
+app.post("/amizade/aceitar/:pedidoId", autenticar, (req, res) => {
+  const pedidoId = parseInt(req.params.pedidoId);
+
+  const pedidoIndex = pedidosAmizade.findIndex(p => p.id === pedidoId);
+  if (pedidoIndex === -1) {
+    return res.status(404).json({ erro: "Pedido não encontrado" });
+  }
+
+  const pedido = pedidosAmizade[pedidoIndex];
+
+  amizades.push({
+    id: amizades.length + 1,
+    usuario1: pedido.de,
+    usuario2: pedido.para
+  });
+
+  pedidosAmizade.splice(pedidoIndex, 1);
+
+  res.json({ mensagem: "Amizade aceita com sucesso" });
+});
+
+app.post("/amizade/recusar/:pedidoId", autenticar, (req, res) => {
+  const pedidoId = parseInt(req.params.pedidoId);
+  pedidosAmizade = pedidosAmizade.filter(p => p.id !== pedidoId);
+  res.json({ mensagem: "Pedido recusado" });
+});
+
+//  Servidor
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);

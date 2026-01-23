@@ -71,3 +71,9 @@ await api.get("/amigos").then(res => {
         friendsList.appendChild(li);
     })
 })
+
+const pedidos = await api.get("/amizade/pedidos");
+if(pedidos.length > 0) {
+    document.querySelector("#pedidos").textContent = pedidos.length;
+    document.querySelector("#pedidos").style.display = "flex";
+}
