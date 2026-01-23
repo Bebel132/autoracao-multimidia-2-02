@@ -485,27 +485,49 @@ app.post("/me/upload_foto", autenticar, upload.single("foto"), (req, res) => {
 });
 
 app.post("/amizade/pedir/:paraId", autenticar, (req, res) => {
-  const deId = usuarios.find(u => u.email === req.usuario.email).id;
+  const usuarioLogado = usuarios.find(u => u.email === req.usuario.email);
+  const deId = usuarioLogado.id;
   const paraId = parseInt(req.params.paraId);
 
   if (deId === paraId) {
-    return res.status(400).json({ erro: "Você não pode pedir amizade com você mesmo." });
+    return res.status(400).json({ codigo: "SELF", erro: "Você não pode se adicionar" });
   }
 
-  const pedidoExistente = pedidosAmizade.find(p => p.de === deId && p.para === paraId);
+  // Verifica se já são amigos
+  const jaAmigos = amizades.some(a =>
+    (a.usuario1 === deId && a.usuario2 === paraId) ||
+    (a.usuario1 === paraId && a.usuario2 === deId)
+  );
+
+  if (jaAmigos) {
+    return res.status(409).json({
+      codigo: "JA_SAO_AMIGOS",
+      erro: "Vocês já são amigos"
+    });
+  }
+
+  // Verifica pedido existente
+  const pedidoExistente = pedidosAmizade.some(p =>
+    (p.de === deId && p.para === paraId) ||
+    (p.de === paraId && p.para === deId)
+  );
+
   if (pedidoExistente) {
-    return res.status(400).json({ erro: "Pedido de amizade já enviado." });
+    return res.status(409).json({
+      codigo: "PEDIDO_EXISTENTE",
+      erro: "Já existe um pedido pendente"
+    });
   }
 
-  const novoPedido = {
+  pedidosAmizade.push({
     id: pedidosAmizade.length + 1,
     de: deId,
     para: paraId
-  };
+  });
 
-  pedidosAmizade.push(novoPedido);
-  res.status(201).json({ mensagem: "Pedido de amizade enviado com sucesso." });
+  res.status(201).json({ mensagem: "Pedido de amizade enviado" });
 });
+
 
 app.get("/amigos", autenticar, (req, res) => {
   const usuarioId = usuarios.find(u => u.email === req.usuario.email).id;
@@ -525,7 +547,53 @@ app.get("/games", autenticar, (req, res) => {
   res.json(games);
 });
 
-// 🔹 Servidor
+app.get("/amizade/pedidos", autenticar, (req, res) => {
+  const usuarioId = usuarios.find(u => u.email === req.usuario.email).id;
+
+  const pedidos = pedidosAmizade
+    .filter(p => p.para === usuarioId)
+    .map(p => {
+      const remetente = usuarios.find(u => u.id === p.de);
+      return {
+        pedidoId: p.id,
+        id: remetente.id,
+        nome: remetente.nome,
+        email: remetente.email,
+        foto: remetente.foto
+      };
+    });
+
+  res.json(pedidos);
+});
+
+app.post("/amizade/aceitar/:pedidoId", autenticar, (req, res) => {
+  const pedidoId = parseInt(req.params.pedidoId);
+
+  const pedidoIndex = pedidosAmizade.findIndex(p => p.id === pedidoId);
+  if (pedidoIndex === -1) {
+    return res.status(404).json({ erro: "Pedido não encontrado" });
+  }
+
+  const pedido = pedidosAmizade[pedidoIndex];
+
+  amizades.push({
+    id: amizades.length + 1,
+    usuario1: pedido.de,
+    usuario2: pedido.para
+  });
+
+  pedidosAmizade.splice(pedidoIndex, 1);
+
+  res.json({ mensagem: "Amizade aceita com sucesso" });
+});
+
+app.post("/amizade/recusar/:pedidoId", autenticar, (req, res) => {
+  const pedidoId = parseInt(req.params.pedidoId);
+  pedidosAmizade = pedidosAmizade.filter(p => p.id !== pedidoId);
+  res.json({ mensagem: "Pedido recusado" });
+});
+
+//  Servidor
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
