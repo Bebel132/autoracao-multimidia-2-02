@@ -42,16 +42,22 @@ await api.get("/usuarios").then(res => {
 });
 
 document.querySelectorAll(".add").forEach(btn => {
-    btn.addEventListener("click", async e => {
-        const paraId = e.target.parentElement.dataset.userId;
+  btn.addEventListener("click", async e => {
+    const paraId = e.target.parentElement.dataset.userId;
 
-        try {
-            const res = await api.post(`/amizade/pedir/${paraId}`, {
-                para: paraId
-            });
-        } catch (err) {
-            console.error(err);
-            alert(err.data.erro);
-        }
-    });
+    try {
+      await api.post(`/amizade/pedir/${paraId}`);
+      alert("Pedido de amizade enviado!");
+    } catch (err) {
+      const codigo = err?.data?.codigo;
+
+      if (codigo === "JA_SAO_AMIGOS") {
+        alert("Vocês já são amigos 🙂");
+      } else if (codigo === "PEDIDO_EXISTENTE") {
+        alert("Já existe um pedido pendente");
+      } else {
+        alert(err?.data?.erro || "Erro ao enviar pedido");
+      }
+    }
+  });
 });
