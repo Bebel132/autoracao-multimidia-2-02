@@ -40,6 +40,10 @@ function validarEstado(estado) {
     return estado.length == 2;
 }
 
+function validarNumero(numero) {
+    return /^\d+$/.test(numero) || numero.toUpperCase() === "SN";
+}
+
 document.querySelector("#cep").addEventListener("input", e => {
   e.target.value = e.target.value
     .replace(/\D/g, "")
@@ -118,6 +122,15 @@ signin2.addEventListener("submit", e => {
     } else {
         newUser.estado = document.querySelector("#estado").value;
     }
+
+    if(validarNumero(document.querySelector("#numero").value) === false) {
+        alert("Número inválido! O número deve conter apenas números ou SN.");
+        return;
+    } else {
+        newUser.numero = document.querySelector("#numero").value;
+    }
+
+    newUser.complemento = document.querySelector("#complemento").value;
 
     // mostra terceira etapa
     signin2.style.display = "none";
