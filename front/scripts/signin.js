@@ -12,7 +12,6 @@ function validarSenhar(senha) {
         !/[^a-zA-Z0-9*;#]/.test(senha)
     );
 }
-
 function validarNome(nome) { 
     if (nome.length <= 3 || nome.length > 50) {
         return false;
@@ -22,22 +21,6 @@ function validarNome(nome) {
 
 function validarEmail(email) {
     return /^[a-zA-Z0-9._]+@[a-zA-Z0-9.]+\.[a-zA-Z]{2,}$/.test(email);
-}
-
-function validarCep(cep) {
-    return /^\d{5}-\d{3}$/.test(cep);
-}
-
-function validarEndereco(endereco) {
-    return endereco.length > 3;
-}
-
-function validarCidade(cidade) {
-    return cidade.length > 2;
-}
-
-function validarEstado(estado) {
-    return estado.length == 2;
 }
 
 document.querySelector("#cep").addEventListener("input", e => {
@@ -76,6 +59,7 @@ signin1.addEventListener("submit", e => {
         newUser.nome = document.querySelector("#text").value;
     }
 
+
     if(validarEmail(document.querySelector("#email").value) === false) {
         alert("Email inválido!");
         return;
@@ -91,33 +75,10 @@ signin1.addEventListener("submit", e => {
 signin2.addEventListener("submit", e => {
     e.preventDefault();
 
-    if(validarCep(document.querySelector("#cep").value) === false) {
-        alert("CEP inválido! O CEP deve conter 8 dígitos.");
-        return;
-    } else {
-        newUser.cep = document.querySelector("#cep").value;
-    }
-
-    if(validarEndereco(document.querySelector("#endereco").value) === false) {
-        alert("Endereço inválido! O endereço deve conter no mínimo 4 caracteres.");
-        return;
-    } else {
-        newUser.endereco = document.querySelector("#endereco").value;
-    }
-
-    if(validarCidade(document.querySelector("#cidade").value) === false) {
-        alert("Cidade inválida! A cidade deve conter no mínimo 3 caracteres.");
-        return;
-    } else {
-        newUser.cidade = document.querySelector("#cidade").value;
-    }
-
-    if(validarEstado(document.querySelector("#estado").value) === false) {
-        alert("Estado inválido! O estado deve conter 2 caracteres.");
-        return;
-    } else {
-        newUser.estado = document.querySelector("#estado").value;
-    }
+    newUser.cep = document.querySelector("#cep").value;
+    newUser.endereco = document.querySelector("#endereco").value;
+    newUser.cidade = document.querySelector("#cidade").value;
+    newUser.estado = document.querySelector("#estado").value;
 
     // mostra terceira etapa
     signin2.style.display = "none";
